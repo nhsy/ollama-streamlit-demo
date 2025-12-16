@@ -1,0 +1,7 @@
+Generate a JIRA Ticket for the following request. The output must include these sections:
+
+Scope:
+
+Tasks:
+
+Deliverables:
