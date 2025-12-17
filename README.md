@@ -1,5 +1,7 @@
 # Ollama Streamlit Playground
 
+![Build Status](https://github.com/nhsy/ollama-streamlit-demo/actions/workflows/test.yml/badge.svg)
+
 This is a Streamlit application that interfaces with a local Ollama instance.
 
 ## Prerequisites
