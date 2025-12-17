@@ -7,6 +7,7 @@ import ollama
 import os
 import re
 import json
+import pypdf
 
 def process_prompt(text):
     """
@@ -102,21 +103,34 @@ with st.sidebar:
     # System Prompt
     system_prompt = st.text_area("System Prompt", value="", placeholder="You are a helpful assistant...", help="Instructions that apply to the entire conversation.")
 
-    st.divider()
 
-    # File Uploader
-    uploaded_files = st.file_uploader("Upload context files", type=["txt", "md", "py", "json", "yml", "yaml"], accept_multiple_files=True)
 
 
 def read_uploaded_file(uploaded_file):
     try:
-        return uploaded_file.getvalue().decode("utf-8")
+        if uploaded_file.name.lower().endswith(".pdf"):
+            reader = pypdf.PdfReader(uploaded_file)
+            text = ""
+            for page in reader.pages:
+                text += page.extract_text() + "\n"
+            return text
+        else:
+            return uploaded_file.getvalue().decode("utf-8")
     except Exception as e:
         return f"[Error reading {uploaded_file.name}: {e}]"
 
 # Chat Mode
 if mode == "Chat":
     st.subheader("Chat Interface")
+    
+    # File Uploader in main content area
+    uploaded_files = st.file_uploader(
+        "📎 Upload context files (PDF, TXT, CSV, etc.)", 
+        type=["txt", "md", "py", "json", "yml", "yaml", "csv", "pdf"], 
+        accept_multiple_files=True,
+        help="Upload files to provide additional context for your chat"
+    )
+    
     if "messages" not in st.session_state:
         st.session_state["messages"] = []
 
@@ -204,6 +218,14 @@ if mode == "Chat":
 elif mode == "Text Transformation":
     st.subheader("Text Transformation")
     
+    # File Uploader in main content area
+    uploaded_files = st.file_uploader(
+        "📎 Upload context files (PDF, TXT, CSV, etc.)", 
+        type=["txt", "md", "py", "json", "yml", "yaml", "csv", "pdf"], 
+        accept_multiple_files=True,
+        help="Upload files to provide additional context for transformation"
+    )
+    
     templates = load_templates()
     
     selected_template = st.selectbox("Choose a transformation template", list(templates.keys()))
@@ -223,6 +245,15 @@ elif mode == "Text Transformation":
                     processed_user_text = process_prompt(user_text)
                     
                     prompt = f"{template_text}\n\n{processed_user_text}"
+
+                    # Append uploaded files content if any
+                    if uploaded_files:
+                        file_contents = "\n\n--- Uploaded Files ---\n"
+                        for uploaded_file in uploaded_files:
+                            content = read_uploaded_file(uploaded_file)
+                            file_contents += f"\nFile: {uploaded_file.name}\nContent:\n{content}\n"
+                        file_contents += "\n----------------------\n"
+                        prompt += file_contents
                     
                     response_placeholder = st.empty()
                     full_response = ""
