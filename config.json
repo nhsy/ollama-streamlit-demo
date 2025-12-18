@@ -1,4 +1,5 @@
 {
+    "default_provider": "ollama",
     "providers": {
         "ollama": {
             "default_model": "qwen2.5:7b"

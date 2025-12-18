@@ -121,9 +121,23 @@ with st.sidebar:
         st.stop()
     else:
         provider_names = list(available_providers.keys())
+
+        # Load config to get default provider
+        config = load_config()
+        default_provider = config.get("default_provider", "")
+
+        default_provider_index = 0
+        if default_provider:
+            # Match the provider name (e.g., "ollama" matches "Ollama (Local)")
+            for i, name in enumerate(provider_names):
+                if default_provider.lower() in name.lower():
+                    default_provider_index = i
+                    break
+
         selected_provider_name = st.selectbox(
             "Select Provider",
             provider_names,
+            index=default_provider_index,
             help="Choose between local Ollama or cloud-based watsonx"
         )
         selected_provider = available_providers[selected_provider_name]

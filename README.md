@@ -11,7 +11,7 @@ This is a Streamlit application that interfaces with local Ollama models and IBM
 - 📥 **Model Management**: Download new models directly from the UI with progress tracking
 - 📊 **Model Metadata**: Detailed tooltips showing size, parameter count, and quantization
 - 🔄 **Text Transformation**: Apply templates for common text operations
-- 📎 **File Upload**: Support for PDF, TXT, CSV, and more with `@[]` reference syntax
+- 📎 **File Upload**: Support for PDF, TXT, CSV, MD, PY, JSON, and more with `@[]` reference syntax
 - 🎛️ **Configurable Parameters**: Adjust temperature, top_p, and system prompts
 - 🔒 **Secure Credentials**: Environment-based configuration for API keys
 
@@ -23,7 +23,7 @@ This is a Streamlit application that interfaces with local Ollama models and IBM
 # Install and start Ollama
 brew install ollama
 brew services start ollama
-ollama pull mistral-nemo
+ollama pull qwen2.5:7b
 
 # Run the app
 pip install -r requirements.txt
@@ -164,14 +164,14 @@ The app will automatically detect which providers are available based on:
 
 ### config.json
 
-Configure default models and templates:
+Configure default provider, models, and templates:
 
 ```json
 {
   "default_provider": "ollama",
   "providers": {
     "ollama": {
-      "default_model": "mistral-nemo:latest"
+      "default_model": "qwen2.5:7b"
     },
     "watsonx": {
       "default_model": "meta-llama/llama-3-3-70b-instruct"
@@ -179,7 +179,10 @@ Configure default models and templates:
   },
   "templates": {
     "Summarize": "Summarize the following text:",
-    ...
+    "Extract Keywords": "Extract the main keywords from the following text:",
+    "Fix Grammar": "Fix the grammar and spelling in the following text:",
+    "Rewrite Professionally": "Rewrite the following text to sound more professional:",
+    "Rewrite as a DevOps SME": "Rewrite the following text as a DevOps SME:"
   }
 }
 ```

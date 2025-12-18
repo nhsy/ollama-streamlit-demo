@@ -31,8 +31,7 @@ def test_json_config_templates_loaded(mock_app_env):
     expected_templates = [
         "Summarize",
         "Fix Grammar",
-        "Rewrite Professionally",
-        "Explain to a 5-year old"
+        "Rewrite Professionally"
     ]
 
     for template in expected_templates:
@@ -44,7 +43,7 @@ def test_template_text_correctness(mock_app_env):
     at.sidebar.selectbox[0].select("Text Transformation").run()
 
     # Select specific template
-    target_template = "Translate to Spanish"
+    target_template = "Summarize"
     at.selectbox[0].select(target_template).run()
 
     # In the app, the text is not directly shown in a widget until we transform,
@@ -61,5 +60,5 @@ def test_template_text_correctness(mock_app_env):
     sent_content = call_args['messages'][0]['content']
 
     # The prompt should contain the template text and the user text
-    assert "Translate the following text to Spanish:" in sent_content
+    assert "Summarize the following text:" in sent_content
     assert "Hello world" in sent_content
